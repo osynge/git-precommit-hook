@@ -123,38 +123,42 @@ def add_file_filters():
 
 
 
+def filter_file(filename):
+    test_list = set([])
+    for i in range(0,len(CHECKS)):
+        check_keys = CHECKS[i].keys()
+        if 'ignore_files_compiled' in check_keys:
+            ignore = False
+            for j in range(0,len(CHECKS[i]['ignore_files_compiled'])):
+                if CHECKS[i]['ignore_files_compiled'][j].match(filename):
+                    ignore = True
+            if ignore:
+                continue
+        if 'match_all' in check_keys:
+            if CHECKS[i]['match_all'] == True:
+                print i
+                test_list.add(i)
+                #print CHECKS[i]
+                continue
+        check_keys = CHECKS[i].keys()
+        if 'match_files_compiled' in check_keys:
+            for j in range(0,len(CHECKS[i]['match_files_compiled'])):
+                if not CHECKS[i]['match_files_compiled'][j].match(filename):
+                    continue
+                test_list.add(i)
+            if len(test_list) == 0:
+                continue
+    return test_list
+
+
 
 
 def filterfiles(inputfiles):
     output = {}
     for filename in inputfiles:
-        test_list = set([])
-        for i in range(0,len(CHECKS)):
-            check_keys = CHECKS[i].keys()
-            if 'ignore_files_compiled' in check_keys:
-                ignore = False
-                for j in range(0,len(CHECKS[i]['ignore_files_compiled'])):
-                    if CHECKS[i]['ignore_files_compiled'][j].match(filename):
-                        ignore = True
-                if ignore:
-                    continue
-            if 'match_all' in check_keys:
-
-                if CHECKS[i]['match_all'] == True:
-                    print i
-                    test_list.add(i)
-                    #print CHECKS[i]
-                    continue
-            check_keys = CHECKS[i].keys()
-            if 'match_files_compiled' in check_keys:
-                for j in range(0,len(CHECKS[i]['match_files_compiled'])):
-                    if not CHECKS[i]['match_files_compiled'][j].match(filename):
-                        continue
-                    test_list.add(i)
-                if len(test_list) == 0:
-                    continue
+        test_list = filter_file(filename)
         if len(test_list) == 0:
-            continue
+                continue
         output[filename] = test_list
     return output
 
