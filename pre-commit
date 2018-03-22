@@ -165,10 +165,10 @@ def filterfiles(inputfiles):
 
 def runcheck(file_name, check_number):
     result = 0
-    print CHECKS[check_number]['command'] % file_name
     process = subprocess.Popen(CHECKS[check_number]['command'] % file_name, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     out, err = process.communicate()
     if out or err:
+        print CHECKS[check_number]['command'] % file_name
         if CHECKS[check_number]['print_filename']:
             prefix = '\t%s:' % file_name
         else:
@@ -198,11 +198,10 @@ def main(all_files):
                 files.append(match.group('name'))
     result = 0
     files_filtered = filterfiles(files)
-    #print files_filtered
     for filename in files_filtered.keys():
         for check in files_filtered[filename]:
             check_rc = runcheck(filename, check)
-            if result != 0:
+            if check_rc != 0:
                 result = check_rc
     return result
 
