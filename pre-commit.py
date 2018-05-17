@@ -93,6 +93,12 @@ CHECKS = [
         'command': 'shellcheck %s',
         'match_files': ['.*\.sh$'],
         'print_filename': True,
+    },
+    {
+        'output': 'Checking golint...',
+        'command': 'golint %s',
+        'match_files': ['.*\.go$'],
+        'print_filename': True,
     }
 ]
 
