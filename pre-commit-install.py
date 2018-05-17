@@ -41,20 +41,24 @@ def get_link_src():
 def get_parser():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description='pre-commit-install\n\n%s')
+        description='pre-commit-install\n')
     parser.add_argument(
         '--base',
         action='store',
         help='Base path to search for git repos.',
-        metavar='CONFIG')
+        metavar='DIR')
     return parser
 
 
 def main(args=None, namespace=None):
     parser = get_parser()
     args = parser.parse_args(args=args, namespace=namespace)
-    
     link_src = get_link_src()
-    
+    base_dir = os.getcwd()
     if args.base:
-        find_git_hook_needed(link_src, args.base)
+        base_dir = args.base
+    
+    find_git_hook_needed(link_src, base_dir)
+
+
+main()
