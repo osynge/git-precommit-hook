@@ -2,7 +2,11 @@
 
 # Code derived from work shown here
 #
-# https://dzone.com/articles/why-your-need-git-pre-commit
+#   https://dzone.com/articles/why-your-need-git-pre-commit
+#
+# If you do not want to invoke this git hook use:
+#
+#   git commit --no-verify
 
 import os
 import re
