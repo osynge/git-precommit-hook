@@ -87,6 +87,12 @@ CHECKS = [
         'ignore_files': ['.*/vendor/.*'],
         'match_files': ['.*\.rs$'],
         'print_filename': True,
+    },
+    {
+        'output': 'Checking shellcheck...',
+        'command': 'shellcheck %s',
+        'match_files': ['.*\.sh$'],
+        'print_filename': True,
     }
 ]
 
