@@ -99,6 +99,12 @@ CHECKS = [
         'command': 'golint %s',
         'match_files': ['.*\.go$'],
         'print_filename': True,
+    },
+    {
+        'output': 'Checking yamllint...',
+        'command': 'yamllint %s',
+        'match_files': ['.*\.sls$'],
+        'print_filename': True,
     }
 ]
 
