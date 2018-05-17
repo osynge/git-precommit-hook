@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
-# Code inspired by https://dzone.com/articles/why-your-need-git-pre-commit
+# Code derived from work shown here
+#
+# https://dzone.com/articles/why-your-need-git-pre-commit
 
 import os
 import re
@@ -48,11 +50,12 @@ CHECKS = [
         'print_filename': True,
     },
     {
-       'output': 'Running Jshint...',
-       # By default, jshint prints 'Lint Free!' upon success. We want to filter this out.
-       'command': 'jshint %s | grep -v "Lint Free!"',
-       'match_files': ['.*yipit/.*\.js$'],
-       'print_filename': False,
+        'output': 'Running Jshint...',
+        # By default, jshint prints 'Lint Free!' upon success.
+        # We want to filter this out.
+        'command': 'jshint %s | grep -v "Lint Free!"',
+        'match_files': ['.*yipit/.*\.js$'],
+        'print_filename': False,
     },
     {
         'output': 'Running Pyflakes...',
@@ -84,11 +87,10 @@ CHECKS = [
 ]
 
 
-
 def add_file_filters():
-    for i in range(0,len(CHECKS)):
+    for i in range(0, len(CHECKS)):
         check_keys = CHECKS[i].keys()
-        if not 'match_files' in check_keys:
+        if 'match_files' not in check_keys:
             print 'addding filter'
             CHECKS[i]['match_all'] = True
             continue
@@ -98,7 +100,7 @@ def add_file_filters():
             for regex in CHECKS[i]['match_files']:
                 try:
                     compiled_regex = re.compile(regex)
-                except:
+                except re.error:
                     print 'Warning match_files error parsing regex:%s' % (regex)
                     continue
                 CHECKS[i]['match_files_compiled'].append(compiled_regex)
@@ -110,7 +112,7 @@ def add_file_filters():
             for regex in CHECKS[i]['ignore_files']:
                 try:
                     compiled_regex = re.compile(regex)
-                except:
+                except re.error:
                     print 'Warning ignore_files error parsing regex:%s' % (regex)
                     continue
                 relist.append(compiled_regex)
@@ -119,38 +121,31 @@ def add_file_filters():
             CHECKS[i]['ignore_files_compiled'] = []
 
 
-
-
-
-
 def filter_file(filename):
     test_list = set([])
-    for i in range(0,len(CHECKS)):
+    for i in range(0, len(CHECKS)):
         check_keys = CHECKS[i].keys()
         if 'ignore_files_compiled' in check_keys:
             ignore = False
-            for j in range(0,len(CHECKS[i]['ignore_files_compiled'])):
+            for j in range(0, len(CHECKS[i]['ignore_files_compiled'])):
                 if CHECKS[i]['ignore_files_compiled'][j].match(filename):
                     ignore = True
             if ignore:
                 continue
         if 'match_all' in check_keys:
-            if CHECKS[i]['match_all'] == True:
+            if CHECKS[i]['match_all'] is True:
                 print i
                 test_list.add(i)
-                #print CHECKS[i]
                 continue
         check_keys = CHECKS[i].keys()
         if 'match_files_compiled' in check_keys:
-            for j in range(0,len(CHECKS[i]['match_files_compiled'])):
+            for j in range(0, len(CHECKS[i]['match_files_compiled'])):
                 if not CHECKS[i]['match_files_compiled'][j].match(filename):
                     continue
                 test_list.add(i)
             if len(test_list) == 0:
                 continue
     return test_list
-
-
 
 
 def filterfiles(inputfiles):
@@ -179,8 +174,6 @@ def runcheck(file_name, check_number):
             print err
         result = 1
     return result
-
-
 
 
 def main(all_files):
