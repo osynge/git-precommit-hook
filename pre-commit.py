@@ -83,7 +83,7 @@ CHECKS = [
     },
     {
         'output': 'Checking rustfmt...',
-        'command': 'rustfmt --write-mode diff %s',
+        'command': 'rustfmt %s',
         'ignore_files': ['.*/vendor/.*'],
         'match_files': ['.*\.rs$'],
         'print_filename': True,
