@@ -83,7 +83,7 @@ CHECKS = [
     },
     {
         'output': 'Checking rustfmt...',
-        'command': 'rustfmt %s',
+        'command': 'rustfmt --check %s',
         'ignore_files': ['.*/vendor/.*'],
         'match_files': ['.*\.rs$'],
         'print_filename': True,
