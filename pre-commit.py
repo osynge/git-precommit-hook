@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # Code derived from work shown here
 #
@@ -62,15 +62,15 @@ CHECKS = [
         'print_filename': False,
     },
     {
-        'output': 'Running Pyflakes...',
-        'command': 'pyflakes %s',
+        'output': 'Running flake8...',
+        'command': 'flake8 %s',
         'match_files': ['.*\.py$'],
         'ignore_files': ['.*settings/.*', '.*manage.py', '.*migrations.*', '.*/terrain/.*'],
         'print_filename': False,
     },
     {
         'output': 'Running pep8...',
-        'command': 'pep8 -r --ignore=E501,W293 %s',
+        'command': 'pycodestyle -r --ignore=E501,W293 %s',
         'match_files': ['.*\.py$'],
         'ignore_files': ['.*migrations.*'],
         'print_filename': False,
@@ -113,7 +113,7 @@ def add_file_filters():
     for i in range(0, len(CHECKS)):
         check_keys = CHECKS[i].keys()
         if 'match_files' not in check_keys:
-            print 'addding filter'
+            print('addding filter')
             CHECKS[i]['match_all'] = True
             continue
         CHECKS[i]['match_all'] = False
@@ -123,7 +123,7 @@ def add_file_filters():
                 try:
                     compiled_regex = re.compile(regex)
                 except re.error:
-                    print 'Warning match_files error parsing regex:%s' % (regex)
+                    print('Warning match_files error parsing regex:%s' % (regex))
                     continue
                 CHECKS[i]['match_files_compiled'].append(compiled_regex)
 
@@ -135,7 +135,7 @@ def add_file_filters():
                 try:
                     compiled_regex = re.compile(regex)
                 except re.error:
-                    print 'Warning ignore_files error parsing regex:%s' % (regex)
+                    print('Warning ignore_files error parsing regex:%s' % (regex))
                     continue
                 relist.append(compiled_regex)
             CHECKS[i]['ignore_files_compiled'] = relist
@@ -156,7 +156,7 @@ def filter_file(filename):
                 continue
         if 'match_all' in check_keys:
             if CHECKS[i]['match_all'] is True:
-                print i
+                print(i)
                 test_list.add(i)
                 continue
         check_keys = CHECKS[i].keys()
@@ -184,16 +184,18 @@ def runcheck(file_name, check_number):
     result = 0
     process = subprocess.Popen(CHECKS[check_number]['command'] % file_name, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     out, err = process.communicate()
-    if out or err:
-        print CHECKS[check_number]['command'] % file_name
+    out_decode = out.decode("utf-8")
+    err_decode = err.decode("utf-8")
+    if out_decode or err_decode:
+        print(CHECKS[check_number]['command'] % file_name)
         if CHECKS[check_number]['print_filename']:
             prefix = '\t%s:' % file_name
         else:
             prefix = '\t'
-        output_lines = ['%s%s' % (prefix, line) for line in out.splitlines()]
-        print '\n'.join(output_lines)
-        if err:
-            print err
+        output_lines = ['%s%s' % (prefix, line) for line in out_decode.splitlines()]
+        print('\n'.join(output_lines))
+        if err_decode:
+            print(err_decode)
         result = 1
     return result
 
@@ -207,7 +209,8 @@ def main(all_files):
     else:
         p = subprocess.Popen(['git', 'diff', '--cached', '--name-status'], stdout=subprocess.PIPE)
         out, err = p.communicate()
-        for line in out.splitlines():
+        out_decode = out.decode("utf-8")
+        for line in out_decode.splitlines():
             match = modified.match(line)
             if match:
                 files.append(match.group('name'))
